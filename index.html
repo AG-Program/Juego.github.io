@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>🏓 Micro Pong - Microbiología</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #1f2937,
+                    #0b1120 70%,
+                    #020617
+                );
+
+            font-family: Arial, sans-serif;
+
+            color: white;
+
+        }
+
+        .game-container {
+
+            width: 780px;
+
+            max-width: 95%;
+
+            text-align: center;
+
+            background: #111827;
+
+            border: 2px solid #334155;
+
+            border-radius: 18px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 0 30px rgba(0, 0, 0, 0.7);
+
+        }
+
+        h1 {
+
+            margin: 5px 0 8px;
+
+            color: #e5e7eb;
+
+            font-size: 32px;
+
+        }
+
+        .subtitle {
+
+            color: #94a3b8;
+
+            margin-bottom: 15px;
+
+            font-size: 16px;
+
+        }
+
+        .info {
+
+            display: flex;
+
+            justify-content: space-around;
+
+            align-items: center;
+
+            margin-bottom: 12px;
+
+            background: #0f172a;
+
+            border-radius: 10px;
+
+            padding: 12px;
+
+            border: 1px solid #334155;
+
+        }
+
+        .info-box {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+        }
+
+        .info-box span {
+
+            color: #fbbf24;
+
+        }
+
+        canvas {
+
+            display: block;
+
+            margin: auto;
+
+            background: #020617;
+
+            border: 3px solid #475569;
+
+            border-radius: 10px;
+
+            max-width: 100%;
+
+        }
+
+        #mensaje {
+
+            margin-top: 12px;
+
+            color: #cbd5e1;
+
+            font-size: 17px;
+
+            min-height: 25px;
+
+        }
+
+        button {
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 12px 25px;
+
+            margin-top: 12px;
+
+            background: #334155;
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+        }
+
+        button:hover {
+
+            background: #475569;
+
+            transform: scale(1.04);
+
+        }
+
+        .question-screen {
+
+            display: none;
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            background: rgba(2, 6, 23, 0.94);
+
+            justify-content: center;
+
+            align-items: center;
+
+            z-index: 100;
+
+            padding: 20px;
+
+        }
+
+        .question-box {
+
+            width: 650px;
+
+            max-width: 95%;
+
+            background: #111827;
+
+            border: 2px solid #475569;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 0 40px rgba(0, 0, 0, 0.8);
+
+        }
+
+        .question-box h2 {
+
+            color: #fbbf24;
+
+            margin-top: 0;
+
+        }
+
+        #preguntaTexto {
+
+            font-size: 21px;
+
+            line-height: 1.5;
+
+            margin: 25px 0;
+
+            color: #e5e7eb;
+
+        }
+
+        .opciones {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+
+        }
+
+        .opcion {
+
+            margin: 0;
+
+            background: #1e293b;
+
+            border: 1px solid #475569;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            color: white;
+
+            font-size: 16px;
+
+        }
+
+        .opcion:hover {
+
+            background: #334155;
+
+        }
+
+        .opcion:disabled {
+
+            cursor: default;
+
+            opacity: 0.7;
+
+        }
+
+        #resultadoPregunta {
+
+            min-height: 35px;
+
+            margin-top: 18px;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+        }
+
+        .victoria {
+
+            display: none;
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            background: rgba(2, 6, 23, 0.97);
+
+            justify-content: center;
+
+            align-items: center;
+
+            z-index: 200;
+
+            text-align: center;
+
+            padding: 20px;
+
+        }
+
+        .victoria-box {
+
+            background: #111827;
+
+            border: 3px solid #fbbf24;
+
+            border-radius: 20px;
+
+            padding: 45px;
+
+            max-width: 750px;
+
+            box-shadow:
+                0 0 50px rgba(251, 191, 36, 0.25);
+
+        }
+
+        .victoria-box h1 {
+
+            font-size: 42px;
+
+            color: #fbbf24;
+
+            margin-bottom: 20px;
+
+        }
+
+        .victoria-box p {
+
+            font-size: 22px;
+
+            color: #e5e7eb;
+
+        }
+
+        /* =========================
+           CONTROLES PARA CELULAR
+        ========================= */
+
+        .controles-celular {
+
+            display: none;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            margin-top: 12px;
+
+        }
+
+        .control-celular {
+
+            flex: 1;
+
+            max-width: 220px;
+
+            margin-top: 0;
+
+            padding: 14px 10px;
+
+            background: #334155;
+
+            color: white;
+
+            font-size: 17px;
+
+            touch-action: none;
+
+            user-select: none;
+
+            -webkit-user-select: none;
+
+        }
+
+        .control-celular:active {
+
+            background: #475569;
+
+            transform: scale(0.97);
+
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+
+                align-items: flex-start;
+
+                padding: 8px;
+
+            }
+
+            .game-container {
+
+                width: 100%;
+
+                max-width: 100%;
+
+                padding: 12px;
+
+                margin-top: 8px;
+
+            }
+
+            h1 {
+
+                font-size: 26px;
+
+            }
+
+            .subtitle {
+
+                font-size: 14px;
+
+            }
+
+            .info {
+
+                padding: 9px 5px;
+
+            }
+
+            .info-box {
+
+                font-size: 15px;
+
+            }
+
+            canvas {
+
+                width: 100%;
+
+                height: auto;
+
+                touch-action: none;
+
+            }
+
+            #mensaje {
+
+                font-size: 15px;
+
+            }
+
+            .controles-celular {
+
+                display: flex;
+
+            }
+
+            .control-celular {
+
+                font-size: 15px;
+
+                padding: 13px 8px;
+
+            }
+
+            #startButton {
+
+                width: 100%;
+
+                max-width: 350px;
+
+            }
+
+            .opciones {
+
+                grid-template-columns: 1fr;
+
+            }
+
+            .question-box {
+
+                padding: 20px 15px;
+
+                max-height: 90vh;
+
+                overflow-y: auto;
+
+            }
+
+            #preguntaTexto {
+
+                font-size: 18px;
+
+            }
+
+            .victoria-box {
+
+                padding: 28px 18px;
+
+            }
+
+            .victoria-box h1 {
+
+                font-size: 30px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <!-- =========================
+         JUEGO
+    ========================= -->
+
+    <div class="game-container">
+
+        <h1>🏓 MICRO PONG</h1>
+
+        <div class="subtitle">
+            Desafío de Microbiología 🧫
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-box">
+
+                Tú:
+                <span id="jugadorScore">0</span>
+
+            </div>
+
+
+            <div class="info-box">
+
+                Ronda:
+                <span id="ronda">1</span>/15
+
+            </div>
+
+
+            <div class="info-box">
+
+                Bot:
+                <span id="botScore">0</span>
+
+            </div>
+
+        </div>
+
+
+        <canvas
+            id="gameCanvas"
+            width="700"
+            height="450">
+        </canvas>
+
+
+        <!-- =========================
+             CONTROLES PARA CELULAR
+        ========================= -->
+
+        <div class="controles-celular">
+
+            <button
+                class="control-celular"
+                id="btnSubir">
+                ⬆️ SUBIR
+            </button>
+
+            <button
+                class="control-celular"
+                id="btnBajar">
+                ⬇️ BAJAR
+            </button>
+
+        </div>
+
+
+        <div id="mensaje">
+
+            Usa ↑ y ↓ o los botones del celular para mover tu barra
+
+        </div>
+
+
+        <button id="startButton">
+
+            ▶ Iniciar juego
+
+        </button>
+
+    </div>
+
+
+
+    <!-- =========================
+         PREGUNTAS
+    ========================= -->
+
+    <div
+        class="question-screen"
+        id="questionScreen">
+
+
+        <div class="question-box">
+
+            <h2>
+                🧫 Pregunta de Microbiología
+            </h2>
+
+
+            <p id="preguntaTexto"></p>
+
+
+            <div
+                class="opciones"
+                id="opciones">
+            </div>
+
+
+            <div id="resultadoPregunta"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         VICTORIA
+    ========================= -->
+
+    <div
+        class="victoria"
+        id="victoria">
+
+
+        <div class="victoria-box">
+
+            <h1>
+                🎉 ¡FELICITACIONES! 🎉
+            </h1>
+
+
+            <p>
+                ¡GANASTE EL JUEGO!
+            </p>
+
+
+            <p>
+                🧫 Completaste las 15 rondas
+                de Microbiología 🧫
+            </p>
+
+
+            <button id="reiniciarFinal">
+
+                🔄 Jugar otra vez
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+
+        // =====================================
+        // CANVAS
+        // =====================================
+
+        const canvas =
+            document.getElementById("gameCanvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+
+        // =====================================
+        // ELEMENTOS HTML
+        // =====================================
+
+        const jugadorScoreTexto =
+            document.getElementById("jugadorScore");
+
+        const botScoreTexto =
+            document.getElementById("botScore");
+
+        const rondaTexto =
+            document.getElementById("ronda");
+
+        const mensaje =
+            document.getElementById("mensaje");
+
+        const startButton =
+            document.getElementById("startButton");
+
+        const questionScreen =
+            document.getElementById("questionScreen");
+
+        const preguntaTexto =
+            document.getElementById("preguntaTexto");
+
+        const opciones =
+            document.getElementById("opciones");
+
+        const resultadoPregunta =
+            document.getElementById("resultadoPregunta");
+
+        const victoria =
+            document.getElementById("victoria");
+
+        const reiniciarFinal =
+            document.getElementById("reiniciarFinal");
+
+
+        const btnSubir =
+            document.getElementById("btnSubir");
+
+        const btnBajar =
+            document.getElementById("btnBajar");
+
+
+        // =====================================
+        // MARCADOR
+        // =====================================
+
+        let jugadorScore = 0;
+
+        let botScore = 0;
+
+        let rondaActual = 1;
+
+
+        // =====================================
+        // JUGADOR
+        // =====================================
+
+        const jugador = {
+
+            x: 20,
+
+            y: canvas.height / 2 - 50,
+
+            ancho: 15,
+
+            alto: 100,
+
+            velocidad: 7
+
+        };
+
+
+        // =====================================
+        // BOT
+        // =====================================
+
+        const bot = {
+
+            x: canvas.width - 35,
+
+            y: canvas.height / 2 - 50,
+
+            ancho: 15,
+
+            alto: 100,
+
+            // BOT MÁS FÁCIL
+
+            velocidad: 2.5
+
+        };
+
+
+        // =====================================
+        // PELOTA
+        // =====================================
+
+        const pelota = {
+
+            x: canvas.width / 2,
+
+            y: canvas.height / 2,
+
+            radio: 8,
+
+            velocidadX: 5,
+
+            velocidadY: 3
+
+        };
+
+
+        // =====================================
+        // VARIABLES
+        // =====================================
+
+        let arriba = false;
+
+        let abajo = false;
+
+        let jugando = false;
+
+        let esperandoPregunta = false;
+
+        let animacion;
+
+
+        // =====================================
+        // PREGUNTAS
+        // =====================================
+
+        const preguntas = [
+
+            {
+                pregunta:
+                    "¿Qué género representa principalmente a las bacterias butíricas?",
+
+                opciones: [
+                    "Clostridium",
+                    "Salmonella",
+                    "Lactobacillus"
+                ],
+
+                correcta: 0
+            },
+
+
+            {
+                pregunta:
+                    "¿Cuál es una bacteria butírica importante en alimentos?",
+
+                opciones: [
+                    "Propionibacterium freudenreichii",
+                    "Clostridium tyrobutyricum",
+                    "Escherichia coli"
+                ],
+
+                correcta: 1
+            },
+
+
+            {
+                pregunta:
+                    "¿Cuál es una bacteria propiónica importante en la elaboración de quesos?",
+
+                opciones: [
+                    "Clostridium botulinum",
+                    "Salmonella enterica",
+                    "Propionibacterium freudenreichii"
+                ],
+
+                correcta: 2
+            },
+
+
+            {
+                pregunta:
+                    "¿En qué alimento son especialmente importantes las bacterias propiónicas?",
+
+                opciones: [
+                    "Quesos tipo Emmental",
+                    "Aceites vegetales",
+                    "Frutas frescas"
+                ],
+
+                correcta: 0
+            },
+
+
+            {
+                pregunta:
+                    "¿Qué gas producen las bacterias propiónicas durante la maduración del queso?",
+
+                opciones: [
+                    "Oxígeno",
+                    "CO₂",
+                    "Nitrógeno"
+                ],
+
+                correcta: 1
+            },
+
+
+            {
+                pregunta:
+                    "¿Qué función cumple el CO₂ producido por las bacterias propiónicas?",
+
+                opciones: [
+                    "Forma los agujeros u “ojos” del queso",
+                    "Elimina toda la humedad del queso",
+                    "Impide la fermentación"
+                ],
+
+                correcta: 0
+            },
+
+
+            {
+                pregunta:
+                    "¿Qué alteración pueden producir las bacterias butíricas en los quesos?",
+
+                opciones: [
+                    "Aumento de dulzor",
+                    "Hinchazón tardía y producción de gases",
+                    "Formación de cristales de azúcar"
+                ],
+
+                correcta: 1
+            },
+
+
+            {
+                pregunta:
+                    "¿Qué característica permite a algunas bacterias butíricas sobrevivir a tratamientos térmicos?",
+
+                opciones: [
+                    "Formación de esporas",
+                    "Producción de oxígeno",
+                    "Ausencia de ADN"
+                ],
+
+                correcta: 0
+            },
+
+
+            {
+                pregunta:
+                    "¿Qué condición favorece generalmente a las bacterias butíricas?",
+
+                opciones: [
+                    "Ambiente anaerobio",
+                    "Ambiente con mucho oxígeno",
+                    "Ausencia total de agua"
+                ],
+
+                correcta: 0
+            },
+
+
+            {
+                pregunta:
+                    "¿Cuál es aproximadamente el pH favorable para el crecimiento de P. freudenreichii?",
+
+                opciones: [
+                    "1–2",
+                    "6–7",
+                    "10–12"
+                ],
+
+                correcta: 1
+            },
+
+
+            {
+                pregunta:
+                    "¿Cuál es aproximadamente la temperatura óptima de crecimiento de P. freudenreichii?",
+
+                opciones: [
+                    "30 °C",
+                    "70 °C",
+                    "0 °C"
+                ],
+
+                correcta: 0
+            },
+
+
+            {
+                pregunta:
+                    "¿Cuál es una medida para controlar estas bacterias en los alimentos?",
+
+                opciones: [
+                    "Control de temperatura, pH, Aw e higiene",
+                    "Aumentar la contaminación",
+                    "Mantener siempre el alimento a temperatura ambiente"
+                ],
+
+                correcta: 0
+            },
+
+
+            {
+                pregunta:
+                    "¿Qué enfermedad puede estar asociada con Clostridium botulinum?",
+
+                opciones: [
+                    "Salmonelosis",
+                    "Botulismo",
+                    "Listeriosis"
+                ],
+
+                correcta: 1
+            },
+
+
+            {
+                pregunta:
+                    "¿Las bacterias propiónicas utilizadas en quesería pueden ser beneficiosas?",
+
+                opciones: [
+                    "Sí, participan en la maduración y características del queso",
+                    "No, todas son patógenas",
+                    "Solo producen enfermedades"
+                ],
+
+                correcta: 0
+            },
+
+
+            {
+                pregunta:
+                    "¿Qué factores se deben controlar para limitar el crecimiento bacteriano en alimentos?",
+
+                opciones: [
+                    "Solo el color",
+                    "Tiempo, temperatura, pH y actividad de agua",
+                    "Solo el tamaño del alimento"
+                ],
+
+                correcta: 1
+            }
+
+        ];
+
+
+        // =====================================
+        // REINICIAR PELOTA
+        // =====================================
+
+        function reiniciarPelota() {
+
+            // LA PELOTA SIEMPRE VUELVE AL CENTRO
+
+            pelota.x =
+                canvas.width / 2;
+
+            pelota.y =
+                canvas.height / 2;
+
+
+            // La velocidad aumenta
+            // ligeramente por ronda
+
+            let velocidadBase =
+                5 +
+                (rondaActual - 1) * 0.7;
+
+
+            // Dirección aleatoria
+
+            pelota.velocidadX =
+                Math.random() > 0.5
+                    ? velocidadBase
+                    : -velocidadBase;
+
+
+            pelota.velocidadY =
+                Math.random() > 0.5
+                    ? velocidadBase * 0.6
+                    : -velocidadBase * 0.6;
+
+        }
+
+
+        // =====================================
+        // DIBUJAR FONDO
+        // =====================================
+
+        function dibujarFondo() {
+
+            ctx.fillStyle =
+                "#020617";
+
+            ctx.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            // Línea central
+
+            ctx.setLineDash(
+                [10, 10]
+            );
+
+            ctx.strokeStyle =
+                "#334155";
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                canvas.width / 2,
+                0
+            );
+
+            ctx.lineTo(
+                canvas.width / 2,
+                canvas.height
+            );
+
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+
+        }
+
+
+        // =====================================
+        // DIBUJAR JUGADOR
+        // =====================================
+
+        function dibujarJugador() {
+
+            ctx.fillStyle =
+                "#60a5fa";
+
+            ctx.fillRect(
+
+                jugador.x,
+
+                jugador.y,
+
+                jugador.ancho,
+
+                jugador.alto
+
+            );
+
+        }
+
+
+        // =====================================
+        // DIBUJAR BOT
+        // =====================================
+
+        function dibujarBot() {
+
+            ctx.fillStyle =
+                "#94a3b8";
+
+            ctx.fillRect(
+
+                bot.x,
+
+                bot.y,
+
+                bot.ancho,
+
+                bot.alto
+
+            );
+
+        }
+
+
+        // =====================================
+        // DIBUJAR PELOTA
+        // =====================================
+
+        function dibujarPelota() {
+
+            ctx.beginPath();
+
+            ctx.arc(
+
+                pelota.x,
+
+                pelota.y,
+
+                pelota.radio,
+
+                0,
+
+                Math.PI * 2
+
+            );
+
+            ctx.fillStyle =
+                "#fbbf24";
+
+            ctx.fill();
+
+            ctx.closePath();
+
+        }
+
+
+        // =====================================
+        // DIBUJAR TODO
+        // =====================================
+
+        function dibujar() {
+
+            dibujarFondo();
+
+            dibujarJugador();
+
+            dibujarBot();
+
+            dibujarPelota();
+
+        }
+
+
+        // =====================================
+        // MOVER JUGADOR
+        // =====================================
+
+        function moverJugador() {
+
+            if (arriba) {
+
+                jugador.y -=
+                    jugador.velocidad;
+
+            }
+
+
+            if (abajo) {
+
+                jugador.y +=
+                    jugador.velocidad;
+
+            }
+
+
+            if (jugador.y < 0) {
+
+                jugador.y = 0;
+
+            }
+
+
+            if (
+                jugador.y +
+                jugador.alto >
+                canvas.height
+            ) {
+
+                jugador.y =
+                    canvas.height -
+                    jugador.alto;
+
+            }
+
+        }
+
+
+        // =====================================
+        // MOVER BOT
+        // =====================================
+
+        function moverBot() {
+
+            const centroBot =
+                bot.y +
+                bot.alto / 2;
+
+
+            // El bot tiene un margen
+            // para reaccionar
+
+            if (
+                centroBot <
+                pelota.y - 20
+            ) {
+
+                bot.y +=
+                    bot.velocidad;
+
+            }
+
+
+            if (
+                centroBot >
+                pelota.y + 20
+            ) {
+
+                bot.y -=
+                    bot.velocidad;
+
+            }
+
+
+            if (bot.y < 0) {
+
+                bot.y = 0;
+
+            }
+
+
+            if (
+                bot.y +
+                bot.alto >
+                canvas.height
+            ) {
+
+                bot.y =
+                    canvas.height -
+                    bot.alto;
+
+            }
+
+        }
+
+
+        // =====================================
+        // MOVER PELOTA
+        // =====================================
+
+        function moverPelota() {
+
+            pelota.x +=
+                pelota.velocidadX;
+
+            pelota.y +=
+                pelota.velocidadY;
+
+
+            // =================================
+            // PARED SUPERIOR
+            // =================================
+
+            if (
+                pelota.y -
+                pelota.radio <= 0
+            ) {
+
+                pelota.velocidadY =
+                    Math.abs(
+                        pelota.velocidadY
+                    );
+
+            }
+
+
+            // =================================
+            // PARED INFERIOR
+            // =================================
+
+            if (
+                pelota.y +
+                pelota.radio >=
+                canvas.height
+            ) {
+
+                pelota.velocidadY =
+                    -Math.abs(
+                        pelota.velocidadY
+                    );
+
+            }
+
+
+            // =================================
+            // COLISIÓN JUGADOR
+            // =================================
+
+            if (
+
+                pelota.x -
+                pelota.radio <=
+                jugador.x +
+                jugador.ancho
+
+                &&
+
+                pelota.x >
+                jugador.x
+
+                &&
+
+                pelota.y >=
+                jugador.y
+
+                &&
+
+                pelota.y <=
+                jugador.y +
+                jugador.alto
+
+            ) {
+
+                pelota.velocidadX =
+                    Math.abs(
+                        pelota.velocidadX
+                    );
+
+
+                let diferencia =
+                    pelota.y -
+                    (
+                        jugador.y +
+                        jugador.alto / 2
+                    );
+
+
+                pelota.velocidadY =
+                    diferencia * 0.12;
+
+            }
+
+
+            // =================================
+            // COLISIÓN BOT
+            // =================================
+
+            if (
+
+                pelota.x +
+                pelota.radio >=
+                bot.x
+
+                &&
+
+                pelota.x <
+                bot.x +
+                bot.ancho
+
+                &&
+
+                pelota.y >=
+                bot.y
+
+                &&
+
+                pelota.y <=
+                bot.y +
+                bot.alto
+
+            ) {
+
+                pelota.velocidadX =
+                    -Math.abs(
+                        pelota.velocidadX
+                    );
+
+
+                let diferencia =
+                    pelota.y -
+                    (
+                        bot.y +
+                        bot.alto / 2
+                    );
+
+
+                pelota.velocidadY =
+                    diferencia * 0.12;
+
+            }
+
+
+            // =================================
+            // EL BOT ANOTA
+            // =================================
+
+            if (
+                pelota.x < 0
+            ) {
+
+                botScore++;
+
+
+                botScoreTexto.textContent =
+                    botScore;
+
+
+                // LA PELOTA VUELVE AL CENTRO
+
+                reiniciarPelota();
+
+
+                // El bot gana la ronda
+
+                if (
+                    botScore >= 3
+                ) {
+
+                    reiniciarJuegoCompleto();
+
+
+                    mensaje.textContent =
+                        "🤖 El bot ganó. ¡Comienza nuevamente!";
+
+                }
+
+            }
+
+
+            // =================================
+            // EL JUGADOR ANOTA
+            // =================================
+
+            if (
+                pelota.x >
+                canvas.width
+            ) {
+
+                jugadorScore++;
+
+
+                jugadorScoreTexto.textContent =
+                    jugadorScore;
+
+
+                // =============================
+                // AQUÍ LA PELOTA VUELVE
+                // AL CENTRO DESPUÉS DEL PUNTO
+                // =============================
+
+                reiniciarPelota();
+
+
+                // Si llega a 3 puntos,
+                // aparece la pregunta
+
+                if (
+                    jugadorScore >= 3
+                ) {
+
+                    ganarRonda();
+
+                }
+
+            }
+
+        }
+
+
+        // =====================================
+        // GANAR RONDA
+        // =====================================
+
+        function ganarRonda() {
+
+            jugando = false;
+
+            esperandoPregunta = true;
+
+
+            cancelAnimationFrame(
+                animacion
+            );
+
+
+            mostrarPregunta();
+
+        }
+
+
+        // =====================================
+        // MOSTRAR PREGUNTA
+        // =====================================
+
+        function mostrarPregunta() {
+
+            let pregunta =
+                preguntas[rondaActual - 1];
+
+
+            preguntaTexto.textContent =
+                pregunta.pregunta;
+
+
+            opciones.innerHTML =
+                "";
+
+
+            resultadoPregunta.textContent =
+                "";
+
+
+            for (
+                let i = 0;
+                i < pregunta.opciones.length;
+                i++
+            ) {
+
+                let boton =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                boton.className =
+                    "opcion";
+
+
+                boton.textContent =
+                    pregunta.opciones[i];
+
+
+                boton.addEventListener(
+                    "click",
+                    function() {
+
+                        responderPregunta(i);
+
+                    }
+                );
+
+
+                opciones.appendChild(
+                    boton
+                );
+
+            }
+
+
+            questionScreen.style.display =
+                "flex";
+
+        }
+
+
+        // =====================================
+        // RESPONDER PREGUNTA
+        // =====================================
+
+        function responderPregunta(
+            respuesta
+        ) {
+
+            let pregunta =
+                preguntas[rondaActual - 1];
+
+
+            if (
+                respuesta ===
+                pregunta.correcta
+            ) {
+
+                resultadoPregunta.textContent =
+                    "✅ ¡CORRECTO! Siguiente ronda";
+
+
+                resultadoPregunta.style.color =
+                    "#22c55e";
+
+
+                let botones =
+                    document.querySelectorAll(
+                        ".opcion"
+                    );
+
+
+                for (
+                    let i = 0;
+                    i < botones.length;
+                    i++
+                ) {
+
+                    botones[i].disabled =
+                        true;
+
+                }
+
+
+                setTimeout(
+                    function() {
+
+                        questionScreen.style.display =
+                            "none";
+
+
+                        esperandoPregunta =
+                            false;
+
+
+                        // Si fue la pregunta 15,
+                        // gana el juego
+
+                        if (
+                            rondaActual >= 15
+                        ) {
+
+                            mostrarVictoria();
+
+                            return;
+
+                        }
+
+
+                        // Siguiente ronda
+
+                        rondaActual++;
+
+
+                        rondaTexto.textContent =
+                            rondaActual;
+
+
+                        // Reiniciar marcador
+
+                        jugadorScore = 0;
+
+                        botScore = 0;
+
+
+                        jugadorScoreTexto.textContent =
+                            0;
+
+                        botScoreTexto.textContent =
+                            0;
+
+
+                        // Colocar las barras
+                        // nuevamente en el centro
+
+                        jugador.y =
+                            canvas.height / 2 -
+                            jugador.alto / 2;
+
+
+                        bot.y =
+                            canvas.height / 2 -
+                            bot.alto / 2;
+
+
+                        // La pelota comienza
+                        // en el centro
+
+                        reiniciarPelota();
+
+
+                        mensaje.textContent =
+                            "⚡ Ronda " +
+                            rondaActual +
+                            " - ¡La pelota es más rápida!";
+
+
+                        jugando = true;
+
+
+                        startButton.textContent =
+                            "🏓 Jugando";
+
+
+                        juego();
+
+                    },
+                    1500
+                );
+
+            }
+
+            else {
+
+                resultadoPregunta.textContent =
+                    "❌ ¡INCORRECTO! El juego se reiniciará";
+
+
+                resultadoPregunta.style.color =
+                    "#ef4444";
+
+
+                let botones =
+                    document.querySelectorAll(
+                        ".opcion"
+                    );
+
+
+                for (
+                    let i = 0;
+                    i < botones.length;
+                    i++
+                ) {
+
+                    botones[i].disabled =
+                        true;
+
+                }
+
+
+                setTimeout(
+                    function() {
+
+                        questionScreen.style.display =
+                            "none";
+
+
+                        reiniciarJuegoCompleto();
+
+
+                        mensaje.textContent =
+                            "❌ Respuesta incorrecta. ¡Vuelve a comenzar desde la ronda 1!";
+
+                    },
+                    1800
+                );
+
+            }
+
+        }
+
+
+        // =====================================
+        // REINICIAR TODO EL JUEGO
+        // =====================================
+
+        function reiniciarJuegoCompleto() {
+
+            jugando = false;
+
+            esperandoPregunta = false;
+
+
+            jugadorScore = 0;
+
+            botScore = 0;
+
+            rondaActual = 1;
+
+
+            jugadorScoreTexto.textContent =
+                0;
+
+            botScoreTexto.textContent =
+                0;
+
+            rondaTexto.textContent =
+                1;
+
+
+            jugador.y =
+                canvas.height / 2 -
+                jugador.alto / 2;
+
+
+            bot.y =
+                canvas.height / 2 -
+                bot.alto / 2;
+
+
+            // PELOTA AL CENTRO
+
+            reiniciarPelota();
+
+
+            startButton.textContent =
+                "▶ Iniciar juego";
+
+
+            cancelAnimationFrame(
+                animacion
+            );
+
+        }
+
+
+        // =====================================
+        // VICTORIA
+        // =====================================
+
+        function mostrarVictoria() {
+
+            jugando = false;
+
+            esperandoPregunta = false;
+
+
+            cancelAnimationFrame(
+                animacion
+            );
+
+
+            victoria.style.display =
+                "flex";
+
+        }
+
+
+        // =====================================
+        // BUCLE DEL JUEGO
+        // =====================================
+
+        function juego() {
+
+            if (!jugando) {
+
+                return;
+
+            }
+
+
+            moverJugador();
+
+            moverBot();
+
+            moverPelota();
+
+            dibujar();
+
+
+            animacion =
+                requestAnimationFrame(
+                    juego
+                );
+
+        }
+
+
+        // =====================================
+        // BOTÓN INICIAR
+        // =====================================
+
+        startButton.addEventListener(
+            "click",
+            function() {
+
+                if (jugando) {
+
+                    return;
+
+                }
+
+
+                reiniciarJuegoCompleto();
+
+
+                jugando = true;
+
+
+                mensaje.textContent =
+                    "🏓 ¡Juega! Usa ↑ y ↓ o los botones del celular";
+
+
+                startButton.textContent =
+                    "🏓 Jugando";
+
+
+                juego();
+
+            }
+        );
+
+
+        // =====================================
+        // TECLADO
+        // =====================================
+
+        document.addEventListener(
+            "keydown",
+            function(evento) {
+
+
+                if (
+                    evento.key ===
+                    "ArrowUp"
+                ) {
+
+                    arriba = true;
+
+                    evento.preventDefault();
+
+                }
+
+
+                if (
+                    evento.key ===
+                    "ArrowDown"
+                ) {
+
+                    abajo = true;
+
+                    evento.preventDefault();
+
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "keyup",
+            function(evento) {
+
+
+                if (
+                    evento.key ===
+                    "ArrowUp"
+                ) {
+
+                    arriba = false;
+
+                }
+
+
+                if (
+                    evento.key ===
+                    "ArrowDown"
+                ) {
+
+                    abajo = false;
+
+                }
+
+            }
+        );
+
+
+        // =====================================
+        // CONTROLES PARA CELULAR
+        // =====================================
+
+        btnSubir.addEventListener(
+            "pointerdown",
+            function(evento) {
+
+                evento.preventDefault();
+
+                arriba = true;
+
+            }
+        );
+
+        btnSubir.addEventListener(
+            "pointerup",
+            function(evento) {
+
+                evento.preventDefault();
+
+                arriba = false;
+
+            }
+        );
+
+        btnSubir.addEventListener(
+            "pointercancel",
+            function() {
+
+                arriba = false;
+
+            }
+        );
+
+        btnSubir.addEventListener(
+            "pointerleave",
+            function() {
+
+                arriba = false;
+
+            }
+        );
+
+
+        btnBajar.addEventListener(
+            "pointerdown",
+            function(evento) {
+
+                evento.preventDefault();
+
+                abajo = true;
+
+            }
+        );
+
+        btnBajar.addEventListener(
+            "pointerup",
+            function(evento) {
+
+                evento.preventDefault();
+
+                abajo = false;
+
+            }
+        );
+
+        btnBajar.addEventListener(
+            "pointercancel",
+            function() {
+
+                abajo = false;
+
+            }
+        );
+
+        btnBajar.addEventListener(
+            "pointerleave",
+            function() {
+
+                abajo = false;
+
+            }
+        );
+
+
+        // =====================================
+        // BOTÓN JUGAR OTRA VEZ
+        // =====================================
+
+        reiniciarFinal.addEventListener(
+            "click",
+            function() {
+
+                victoria.style.display =
+                    "none";
+
+
+                reiniciarJuegoCompleto();
+
+
+                jugando = true;
+
+
+                mensaje.textContent =
+                    "🏓 ¡Comienza nuevamente!";
+
+
+                startButton.textContent =
+                    "🏓 Jugando";
+
+
+                juego();
+
+            }
+        );
+
+
+        // =====================================
+        // DIBUJO INICIAL
+        // =====================================
+
+        dibujar();
+
+    </script>
+
+</body>
+
+</html>
