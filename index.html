@@ -1,0 +1,2241 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Microbiología - Ping Pong</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #101820;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .contenedor {
+            width: 100%;
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+            color: #00d4ff;
+        }
+
+        .subtitulo {
+            color: #b8c7d9;
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================
+           PANTALLA INICIAL
+        ========================================= */
+
+        #pantallaInicio {
+            display: block;
+        }
+
+        .imagen-guia {
+            width: 100%;
+            max-width: 550px;
+            max-height: 65vh;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto 18px auto;
+            border: 2px solid #52677e;
+        }
+
+        .seleccion-nivel {
+            margin: 20px 0;
+        }
+
+        .botones-nivel {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 22px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-facil {
+            background: #198754;
+        }
+
+        .btn-medio {
+            background: #d39e00;
+        }
+
+        .btn-dificil {
+            background: #dc3545;
+        }
+
+        .btn-jugar {
+            background: #007bff;
+            font-size: 20px;
+            padding: 14px 40px;
+            margin-top: 15px;
+        }
+
+        .nivel-seleccionado {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+
+        /* =========================================
+           PANTALLA DEL JUEGO
+        ========================================= */
+
+        #pantallaJuego {
+            display: none;
+        }
+
+        .informacion {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dato {
+            background: #1b2a38;
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+        .nivel-facil {
+            color: #38d26f;
+        }
+
+        .nivel-medio {
+            color: #ffd43b;
+        }
+
+        .nivel-dificil {
+            color: #ff5c5c;
+        }
+
+        #canvas {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            background: #000;
+            border: 3px solid #00d4ff;
+            border-radius: 8px;
+            display: block;
+            margin: auto;
+            touch-action: none;
+        }
+
+        .controles {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .control {
+            width: 80px;
+            height: 55px;
+            background: #263849;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            user-select: none;
+            touch-action: none;
+        }
+
+        .control:active {
+            background: #00a8cc;
+        }
+
+        .mensaje {
+            margin-top: 15px;
+            min-height: 30px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
+        /* =========================================
+           PREGUNTAS
+        ========================================= */
+
+        #preguntaContainer {
+            display: none;
+            margin: 25px auto;
+            max-width: 850px;
+            background: #1b2a38;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #00d4ff;
+        }
+
+        #pregunta {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .opciones {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .opcion {
+            background: #263849;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .opcion:hover {
+            background: #34516a;
+        }
+
+
+        /* =========================================
+           PANTALLA FINAL
+        ========================================= */
+
+        #pantallaFinal {
+            display: none;
+            padding: 30px;
+        }
+
+        #pantallaFinal h2 {
+            color: #00d4ff;
+            font-size: 32px;
+        }
+
+        .btn-reiniciar {
+            background: #007bff;
+            margin-top: 20px;
+        }
+
+
+        /* =========================================
+           CELULAR
+        ========================================= */
+
+        @media (max-width: 600px) {
+
+            .contenedor {
+                padding: 12px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            .subtitulo {
+                font-size: 14px;
+            }
+
+            .imagen-guia {
+                max-height: 52vh;
+            }
+
+            .informacion {
+                font-size: 14px;
+            }
+
+            .dato {
+                padding: 8px 12px;
+            }
+
+            .opciones {
+                grid-template-columns: 1fr;
+            }
+
+            #pregunta {
+                font-size: 17px;
+            }
+
+            .control {
+                width: 100px;
+                height: 60px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="contenedor">
+
+
+    <!-- =========================================
+         PANTALLA INICIAL
+    ========================================= -->
+
+    <div id="pantallaInicio">
+
+        <h1>
+            🧫 Microbiología - Ping Pong
+        </h1>
+
+        <p class="subtitulo">
+            Responde correctamente las preguntas para avanzar.
+        </p>
+
+
+        <img
+            src="guia-microbiologia.png"
+            alt="Guía de consulta rápida de microbiología"
+            class="imagen-guia"
+        >
+
+
+        <div class="seleccion-nivel">
+
+            <h3>
+                Selecciona la dificultad
+            </h3>
+
+
+            <div class="botones-nivel">
+
+                <button
+                    class="btn-facil"
+                    onclick="seleccionarNivel('facil')"
+                >
+                    FÁCIL
+                </button>
+
+
+                <button
+                    class="btn-medio"
+                    onclick="seleccionarNivel('medio')"
+                >
+                    MEDIO
+                </button>
+
+
+                <button
+                    class="btn-dificil"
+                    onclick="seleccionarNivel('dificil')"
+                >
+                    DIFÍCIL
+                </button>
+
+            </div>
+
+
+            <div class="nivel-seleccionado">
+
+                Nivel seleccionado:
+
+                <strong id="nivelSeleccionado">
+                    FÁCIL
+                </strong>
+
+            </div>
+
+
+            <button
+                class="btn-jugar"
+                onclick="iniciarJuego()"
+            >
+                ▶ JUGAR
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================
+         PANTALLA DEL JUEGO
+    ========================================= -->
+
+    <div id="pantallaJuego">
+
+
+        <div class="informacion">
+
+
+            <div class="dato">
+
+                Ronda:
+
+                <strong id="rondaActual">
+                    1
+                </strong>
+
+                /15
+
+            </div>
+
+
+            <div class="dato">
+
+                ❤️ Vidas:
+
+                <strong id="vidas">
+                    3
+                </strong>
+
+            </div>
+
+
+            <div class="dato">
+
+                Tú:
+
+                <strong id="puntosJugador">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="dato">
+
+                Bot:
+
+                <strong id="puntosBot">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="dato">
+
+                Nivel:
+
+                <strong id="nivelJuego">
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+
+        <canvas
+            id="canvas"
+            width="900"
+            height="500"
+        >
+        </canvas>
+
+
+
+        <div class="controles">
+
+            <div
+                class="control"
+                id="btnArriba"
+            >
+                ▲
+            </div>
+
+
+            <div
+                class="control"
+                id="btnAbajo"
+            >
+                ▼
+            </div>
+
+        </div>
+
+
+        <div
+            id="mensaje"
+            class="mensaje"
+        >
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================================
+         PREGUNTA
+    ========================================= -->
+
+    <div id="preguntaContainer">
+
+
+        <h2>
+            🧠 Pregunta de microbiología
+        </h2>
+
+
+        <div id="pregunta">
+        </div>
+
+
+        <div
+            id="opciones"
+            class="opciones"
+        >
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================================
+         PANTALLA FINAL
+    ========================================= -->
+
+    <div id="pantallaFinal">
+
+
+        <h2>
+            🎉 ¡Juego terminado!
+        </h2>
+
+
+        <p id="resultadoFinal">
+        </p>
+
+
+        <button
+            class="btn-reiniciar"
+            onclick="reiniciarJuegoCompleto()"
+        >
+            🔄 JUGAR DE NUEVO
+        </button>
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    /* =========================================
+       CANVAS
+    ========================================= */
+
+    const canvas =
+        document.getElementById("canvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+
+    /* =========================================
+       PANTALLAS
+    ========================================= */
+
+    const pantallaInicio =
+        document.getElementById(
+            "pantallaInicio"
+        );
+
+    const pantallaJuego =
+        document.getElementById(
+            "pantallaJuego"
+        );
+
+    const pantallaFinal =
+        document.getElementById(
+            "pantallaFinal"
+        );
+
+    const preguntaContainer =
+        document.getElementById(
+            "preguntaContainer"
+        );
+
+
+
+    /* =========================================
+       INFORMACIÓN
+    ========================================= */
+
+    const rondaActual =
+        document.getElementById(
+            "rondaActual"
+        );
+
+    const vidasTexto =
+        document.getElementById(
+            "vidas"
+        );
+
+    const puntosJugadorTexto =
+        document.getElementById(
+            "puntosJugador"
+        );
+
+    const puntosBotTexto =
+        document.getElementById(
+            "puntosBot"
+        );
+
+    const nivelJuego =
+        document.getElementById(
+            "nivelJuego"
+        );
+
+    const nivelSeleccionado =
+        document.getElementById(
+            "nivelSeleccionado"
+        );
+
+    const mensaje =
+        document.getElementById(
+            "mensaje"
+        );
+
+
+
+    /* =========================================
+       NIVELES
+    ========================================= */
+
+    const niveles = {
+
+
+        facil: {
+
+            nombre: "FÁCIL",
+
+            clase: "nivel-facil",
+
+            // Bot MUY lento
+            velocidadBot: 0.35,
+
+            // Pelota lenta
+            velocidadPelota: 2.2
+
+        },
+
+
+        medio: {
+
+            nombre: "MEDIO",
+
+            clase: "nivel-medio",
+
+            velocidadBot: 2.3,
+
+            velocidadPelota: 3.5
+
+        },
+
+
+        dificil: {
+
+            nombre: "DIFÍCIL",
+
+            clase: "nivel-dificil",
+
+            velocidadBot: 2.8,
+
+            velocidadPelota: 4
+
+        }
+
+    };
+
+
+    let nivelElegido = "facil";
+
+    let nivelActual =
+        niveles.facil;
+
+
+
+    /* =========================================
+       JUGADOR
+    ========================================= */
+
+    const jugador = {
+
+        x: 20,
+
+        y:
+            canvas.height / 2 - 50,
+
+        ancho: 15,
+
+        alto: 100,
+
+        velocidad: 7
+
+    };
+
+
+
+    /* =========================================
+       BOT
+    ========================================= */
+
+    const bot = {
+
+        x:
+            canvas.width - 35,
+
+        y:
+            canvas.height / 2 - 50,
+
+        ancho: 15,
+
+        alto: 100,
+
+        velocidad: 0.35
+
+    };
+
+
+
+    /* =========================================
+       PELOTA
+    ========================================= */
+
+    const pelota = {
+
+        x:
+            canvas.width / 2,
+
+        y:
+            canvas.height / 2,
+
+        radio: 9,
+
+        velocidadX: 2.2,
+
+        velocidadY: 1
+
+    };
+
+
+
+    /* =========================================
+       VARIABLES DEL JUEGO
+    ========================================= */
+
+    let puntosJugador = 0;
+
+    let puntosBot = 0;
+
+    let vidas = 3;
+
+    let ronda = 1;
+
+    let juegoActivo = false;
+
+    let esperandoPregunta = false;
+
+    let preguntaActual = null;
+
+
+    let arribaPresionado = false;
+
+    let abajoPresionado = false;
+
+
+
+    /* =========================================
+       PREGUNTAS
+    ========================================= */
+
+    const preguntas = [
+
+
+        {
+            pregunta:
+                "¿Qué tipo de bacterias producen ácido butírico?",
+
+            opciones: [
+                "Clostridium",
+                "Lactobacillus",
+                "Propionibacterium",
+                "Streptococcus"
+            ],
+
+            correcta:
+                "Clostridium"
+        },
+
+
+        {
+            pregunta:
+                "¿Cuál es un producto característico de las bacterias propiónicas?",
+
+            opciones: [
+                "Ácido propiónico",
+                "Ácido acético",
+                "Alcohol",
+                "Metano"
+            ],
+
+            correcta:
+                "Ácido propiónico"
+        },
+
+
+        {
+            pregunta:
+                "¿Qué género está asociado con la producción de ácido propiónico?",
+
+            opciones: [
+                "Propionibacterium",
+                "Clostridium",
+                "Salmonella",
+                "Bacillus"
+            ],
+
+            correcta:
+                "Propionibacterium"
+        },
+
+
+        {
+            pregunta:
+                "Las bacterias butíricas pueden producir principalmente:",
+
+            opciones: [
+                "Ácido butírico",
+                "Ácido propiónico",
+                "Ácido láctico",
+                "Etanol"
+            ],
+
+            correcta:
+                "Ácido butírico"
+        },
+
+
+        {
+            pregunta:
+                "¿En qué alimento son importantes las bacterias propiónicas?",
+
+            opciones: [
+                "Quesos",
+                "Carne fresca",
+                "Arroz",
+                "Huevos"
+            ],
+
+            correcta:
+                "Quesos"
+        },
+
+
+        {
+            pregunta:
+                "Las bacterias propiónicas participan en la formación de:",
+
+            opciones: [
+                "Ojos en algunos quesos",
+                "Cristales de sal",
+                "Moho negro",
+                "Azúcar"
+            ],
+
+            correcta:
+                "Ojos en algunos quesos"
+        },
+
+
+        {
+            pregunta:
+                "¿Qué gas puede producirse durante la fermentación propiónica?",
+
+            opciones: [
+                "CO₂",
+                "O₂",
+                "N₂",
+                "H₂S"
+            ],
+
+            correcta:
+                "CO₂"
+        },
+
+
+        {
+            pregunta:
+                "Las bacterias del género Clostridium suelen ser:",
+
+            opciones: [
+                "Anaerobias",
+                "Aerobias estrictas",
+                "Virus",
+                "Hongos"
+            ],
+
+            correcta:
+                "Anaerobias"
+        },
+
+
+        {
+            pregunta:
+                "¿Cuál es un producto de la fermentación butírica?",
+
+            opciones: [
+                "Ácido butírico",
+                "Ácido propiónico",
+                "Oxígeno",
+                "Glucógeno"
+            ],
+
+            correcta:
+                "Ácido butírico"
+        },
+
+
+        {
+            pregunta:
+                "Las bacterias propiónicas tienen importancia principalmente en:",
+
+            opciones: [
+                "La industria quesera",
+                "La industria del vidrio",
+                "La industria textil",
+                "La fabricación de metales"
+            ],
+
+            correcta:
+                "La industria quesera"
+        },
+
+
+        {
+            pregunta:
+                "¿Cuál de estos microorganismos es una bacteria butírica?",
+
+            opciones: [
+                "Clostridium butyricum",
+                "Propionibacterium",
+                "Saccharomyces",
+                "Aspergillus"
+            ],
+
+            correcta:
+                "Clostridium butyricum"
+        },
+
+
+        {
+            pregunta:
+                "Las bacterias propiónicas transforman principalmente lactato en:",
+
+            opciones: [
+                "Ácido propiónico",
+                "Ácido sulfúrico",
+                "Oxígeno",
+                "Metano"
+            ],
+
+            correcta:
+                "Ácido propiónico"
+        },
+
+
+        {
+            pregunta:
+                "La fermentación butírica ocurre principalmente en condiciones:",
+
+            opciones: [
+                "Anaerobias",
+                "Muy oxigenadas",
+                "Acuáticas",
+                "Estériles"
+            ],
+
+            correcta:
+                "Anaerobias"
+        },
+
+
+        {
+            pregunta:
+                "Un efecto de las bacterias propiónicas en algunos quesos es:",
+
+            opciones: [
+                "Formación de agujeros",
+                "Eliminación de proteínas",
+                "Congelación",
+                "Deshidratación total"
+            ],
+
+            correcta:
+                "Formación de agujeros"
+        },
+
+
+        {
+            pregunta:
+                "¿Cuál es el objetivo principal de estudiar estas bacterias en alimentos?",
+
+            opciones: [
+                "Comprender sus efectos en la fermentación y conservación",
+                "Eliminar todos los microorganismos",
+                "Aumentar el contenido de agua",
+                "Cambiar el color de los alimentos"
+            ],
+
+            correcta:
+                "Comprender sus efectos en la fermentación y conservación"
+        }
+
+    ];
+
+
+
+    /* =========================================
+       SELECCIONAR NIVEL
+    ========================================= */
+
+    function seleccionarNivel(nivel) {
+
+        nivelElegido = nivel;
+
+        nivelActual =
+            niveles[nivel];
+
+        nivelSeleccionado.textContent =
+            nivelActual.nombre;
+
+        nivelSeleccionado.className =
+            nivelActual.clase;
+
+    }
+
+
+
+    /* =========================================
+       INICIAR JUEGO
+    ========================================= */
+
+    function iniciarJuego() {
+
+        nivelActual =
+            niveles[nivelElegido];
+
+
+        pantallaInicio.style.display =
+            "none";
+
+
+        pantallaFinal.style.display =
+            "none";
+
+
+        pantallaJuego.style.display =
+            "block";
+
+
+        preguntaContainer.style.display =
+            "none";
+
+
+        puntosJugador = 0;
+
+        puntosBot = 0;
+
+        vidas = 3;
+
+        ronda = 1;
+
+        juegoActivo = true;
+
+        esperandoPregunta = false;
+
+
+        jugador.y =
+            canvas.height / 2 -
+            jugador.alto / 2;
+
+
+        bot.y =
+            canvas.height / 2 -
+            bot.alto / 2;
+
+
+        bot.velocidad =
+            nivelActual.velocidadBot;
+
+
+        nivelJuego.textContent =
+            nivelActual.nombre;
+
+
+        nivelJuego.className =
+            nivelActual.clase;
+
+
+        actualizarInformacion();
+
+
+        reiniciarPelota();
+
+
+        mensaje.textContent = "";
+
+
+        requestAnimationFrame(juego);
+
+    }
+
+
+
+    /* =========================================
+       REINICIAR PELOTA
+    ========================================= */
+
+    function reiniciarPelota() {
+
+        pelota.x =
+            canvas.width / 2;
+
+        pelota.y =
+            canvas.height / 2;
+
+
+        pelota.velocidadX =
+            nivelActual.velocidadPelota *
+            (
+                Math.random() < 0.5
+                    ? -1
+                    : 1
+            );
+
+
+        if (
+            nivelElegido === "facil"
+        ) {
+
+            pelota.velocidadY =
+                (
+                    Math.random() * 1 +
+                    0.4
+                ) *
+                (
+                    Math.random() < 0.5
+                        ? -1
+                        : 1
+                );
+
+        } else {
+
+            pelota.velocidadY =
+                (
+                    Math.random() * 3 +
+                    1
+                ) *
+                (
+                    Math.random() < 0.5
+                        ? -1
+                        : 1
+                );
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       ACTUALIZAR INFORMACIÓN
+    ========================================= */
+
+    function actualizarInformacion() {
+
+        rondaActual.textContent =
+            ronda;
+
+        vidasTexto.textContent =
+            vidas;
+
+        puntosJugadorTexto.textContent =
+            puntosJugador;
+
+        puntosBotTexto.textContent =
+            puntosBot;
+
+    }
+
+
+
+    /* =========================================
+       DIBUJAR
+    ========================================= */
+
+    function dibujar() {
+
+
+        ctx.fillStyle =
+            "#000";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        ctx.strokeStyle =
+            "#333";
+
+        ctx.setLineDash([
+            10,
+            10
+        ]);
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            canvas.width / 2,
+            0
+        );
+
+        ctx.lineTo(
+            canvas.width / 2,
+            canvas.height
+        );
+
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+
+
+        /* JUGADOR */
+
+        ctx.fillStyle =
+            "#00d4ff";
+
+        ctx.fillRect(
+            jugador.x,
+            jugador.y,
+            jugador.ancho,
+            jugador.alto
+        );
+
+
+        /* BOT */
+
+        ctx.fillStyle =
+            "#ff4d6d";
+
+        ctx.fillRect(
+            bot.x,
+            bot.y,
+            bot.ancho,
+            bot.alto
+        );
+
+
+        /* PELOTA */
+
+        ctx.beginPath();
+
+        ctx.arc(
+            pelota.x,
+            pelota.y,
+            pelota.radio,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.fill();
+
+        ctx.closePath();
+
+    }
+
+
+
+    /* =========================================
+       ACTUALIZAR JUGADOR
+    ========================================= */
+
+    function actualizarJugador() {
+
+        if (
+            arribaPresionado
+        ) {
+
+            jugador.y -=
+                jugador.velocidad;
+
+        }
+
+
+        if (
+            abajoPresionado
+        ) {
+
+            jugador.y +=
+                jugador.velocidad;
+
+        }
+
+
+        if (
+            jugador.y < 0
+        ) {
+
+            jugador.y = 0;
+
+        }
+
+
+        if (
+            jugador.y +
+            jugador.alto >
+            canvas.height
+        ) {
+
+            jugador.y =
+                canvas.height -
+                jugador.alto;
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       ACTUALIZAR BOT
+    ========================================= */
+
+    function actualizarBot() {
+
+        const centroBot =
+            bot.y +
+            bot.alto / 2;
+
+
+        const diferencia =
+            pelota.y -
+            centroBot;
+
+
+        /*
+         * FÁCIL:
+         * El bot es muy lento y
+         * reacciona tarde.
+         */
+
+        if (
+            nivelElegido === "facil"
+        ) {
+
+            if (
+                pelota.x >
+                canvas.width * 0.55
+            ) {
+
+                if (
+                    Math.abs(diferencia) >
+                    25
+                ) {
+
+                    bot.y +=
+                        Math.sign(diferencia) *
+                        bot.velocidad;
+
+                }
+
+            }
+
+        } else {
+
+
+            /* MEDIO Y DIFÍCIL */
+
+            if (
+                Math.abs(diferencia) >
+                5
+            ) {
+
+                bot.y +=
+                    Math.sign(diferencia) *
+                    bot.velocidad;
+
+            }
+
+        }
+
+
+        /* LÍMITES */
+
+        if (
+            bot.y < 0
+        ) {
+
+            bot.y = 0;
+
+        }
+
+
+        if (
+            bot.y +
+            bot.alto >
+            canvas.height
+        ) {
+
+            bot.y =
+                canvas.height -
+                bot.alto;
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       COLISIONES
+    ========================================= */
+
+    function detectarColisiones() {
+
+
+        /* PARED SUPERIOR */
+
+        if (
+            pelota.y -
+            pelota.radio <= 0
+        ) {
+
+            pelota.y =
+                pelota.radio;
+
+            pelota.velocidadY *= -1;
+
+        }
+
+
+        /* PARED INFERIOR */
+
+        if (
+            pelota.y +
+            pelota.radio >=
+            canvas.height
+        ) {
+
+            pelota.y =
+                canvas.height -
+                pelota.radio;
+
+            pelota.velocidadY *= -1;
+
+        }
+
+
+        /* JUGADOR */
+
+        if (
+
+            pelota.x -
+            pelota.radio <=
+            jugador.x +
+            jugador.ancho &&
+
+            pelota.x +
+            pelota.radio >=
+            jugador.x &&
+
+            pelota.y >=
+            jugador.y &&
+
+            pelota.y <=
+            jugador.y +
+            jugador.alto &&
+
+            pelota.velocidadX < 0
+
+        ) {
+
+            pelota.x =
+                jugador.x +
+                jugador.ancho +
+                pelota.radio;
+
+
+            pelota.velocidadX =
+                Math.abs(
+                    pelota.velocidadX
+                );
+
+        }
+
+
+        /* BOT */
+
+        if (
+
+            pelota.x +
+            pelota.radio >=
+            bot.x &&
+
+            pelota.x -
+            pelota.radio <=
+            bot.x +
+            bot.ancho &&
+
+            pelota.y >=
+            bot.y &&
+
+            pelota.y <=
+            bot.y +
+            bot.alto &&
+
+            pelota.velocidadX > 0
+
+        ) {
+
+            pelota.x =
+                bot.x -
+                pelota.radio;
+
+
+            pelota.velocidadX =
+                -Math.abs(
+                    pelota.velocidadX
+                );
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       ACTUALIZAR PELOTA
+    ========================================= */
+
+    function actualizarPelota() {
+
+        pelota.x +=
+            pelota.velocidadX;
+
+        pelota.y +=
+            pelota.velocidadY;
+
+
+        detectarColisiones();
+
+
+        /* BOT MARCA */
+
+        if (
+            pelota.x <
+            -pelota.radio
+        ) {
+
+            puntosBot++;
+
+            actualizarInformacion();
+
+            verificarPunto();
+
+        }
+
+
+        /* JUGADOR MARCA */
+
+        if (
+            pelota.x >
+            canvas.width +
+            pelota.radio
+        ) {
+
+            puntosJugador++;
+
+            actualizarInformacion();
+
+            verificarPunto();
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       VERIFICAR PUNTO
+    ========================================= */
+
+    function verificarPunto() {
+
+
+        /* =====================================
+           GANÓ LA RONDA
+        ===================================== */
+
+        if (
+            puntosJugador >= 3
+        ) {
+
+            juegoActivo = false;
+
+
+            mensaje.textContent =
+                "🎉 ¡Ganaste la ronda!";
+
+
+            /*
+             * SOLO CUANDO GANA
+             * APARECE LA PREGUNTA
+             */
+
+            mostrarPregunta();
+
+
+            return;
+
+        }
+
+
+        /* =====================================
+           PERDIÓ LA RONDA
+        ===================================== */
+
+        if (
+            puntosBot >= 3
+        ) {
+
+            vidas--;
+
+
+            actualizarInformacion();
+
+
+            /*
+             * SI TODAVÍA TIENE VIDAS,
+             * NO HAY PREGUNTA.
+             *
+             * SIMPLEMENTE CONTINÚA.
+             */
+
+            if (
+                vidas > 0
+            ) {
+
+                mensaje.textContent =
+                    "❌ Perdiste la ronda. Continúa jugando.";
+
+
+                puntosJugador = 0;
+
+                puntosBot = 0;
+
+
+                actualizarInformacion();
+
+
+                reiniciarPelota();
+
+
+                juegoActivo = true;
+
+
+                requestAnimationFrame(
+                    juego
+                );
+
+
+                return;
+
+            }
+
+
+            /*
+             * SI PERDIÓ LAS 3 VIDAS
+             * VUELVE AL INICIO.
+             */
+
+            mensaje.textContent =
+                "💔 ¡Perdiste las 3 vidas!";
+
+
+            setTimeout(
+                reiniciarJuegoCompleto,
+                1200
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+         * TODAVÍA NO TERMINA LA RONDA
+         */
+
+        reiniciarPelota();
+
+    }
+
+
+
+    /* =========================================
+       MOSTRAR PREGUNTA
+    ========================================= */
+
+    function mostrarPregunta() {
+
+        esperandoPregunta = true;
+
+
+        preguntaContainer.style.display =
+            "block";
+
+
+        preguntaActual =
+            preguntas[ronda - 1];
+
+
+        document.getElementById(
+            "pregunta"
+        ).textContent =
+            preguntaActual.pregunta;
+
+
+        const opciones =
+            document.getElementById(
+                "opciones"
+            );
+
+
+        opciones.innerHTML = "";
+
+
+        preguntaActual.opciones.forEach(
+            function (opcion) {
+
+
+                const elemento =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                elemento.className =
+                    "opcion";
+
+
+                elemento.textContent =
+                    opcion;
+
+
+                elemento.onclick =
+                    function () {
+
+                        responderPregunta(
+                            opcion
+                        );
+
+                    };
+
+
+                opciones.appendChild(
+                    elemento
+                );
+
+            }
+        );
+
+
+        preguntaContainer.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    }
+
+
+
+    /* =========================================
+       RESPONDER PREGUNTA
+    ========================================= */
+
+    function responderPregunta(
+        respuesta
+    ) {
+
+
+        if (
+            !esperandoPregunta
+        ) {
+
+            return;
+
+        }
+
+
+        esperandoPregunta = false;
+
+
+        preguntaContainer.style.display =
+            "none";
+
+
+        /*
+         * RESPUESTA CORRECTA
+         */
+
+        if (
+            respuesta ===
+            preguntaActual.correcta
+        ) {
+
+
+            mensaje.textContent =
+                "✅ ¡Respuesta correcta!";
+
+
+            ronda++;
+
+
+            /*
+             * COMPLETÓ LAS 15 RONDAS
+             */
+
+            if (
+                ronda > 15
+            ) {
+
+                mostrarPantallaFinal();
+
+                return;
+
+            }
+
+
+            puntosJugador = 0;
+
+            puntosBot = 0;
+
+
+            actualizarInformacion();
+
+
+            reiniciarPelota();
+
+
+            juegoActivo = true;
+
+
+            requestAnimationFrame(
+                juego
+            );
+
+        }
+
+
+        /*
+         * RESPUESTA INCORRECTA
+         */
+
+        else {
+
+
+            /*
+             * Una respuesta incorrecta
+             * reinicia el juego.
+             */
+
+            mensaje.textContent =
+                "❌ Respuesta incorrecta. El juego se reiniciará.";
+
+
+            setTimeout(
+                reiniciarJuegoCompleto,
+                1600
+            );
+
+        }
+
+    }
+
+
+
+    /* =========================================
+       BUCLE DEL JUEGO
+    ========================================= */
+
+    function juego() {
+
+
+        if (
+            !juegoActivo
+        ) {
+
+            dibujar();
+
+            return;
+
+        }
+
+
+        actualizarJugador();
+
+        actualizarBot();
+
+        actualizarPelota();
+
+        dibujar();
+
+
+        requestAnimationFrame(
+            juego
+        );
+
+    }
+
+
+
+    /* =========================================
+       PANTALLA FINAL
+    ========================================= */
+
+    function mostrarPantallaFinal() {
+
+        juegoActivo = false;
+
+
+        pantallaJuego.style.display =
+            "none";
+
+
+        preguntaContainer.style.display =
+            "none";
+
+
+        pantallaFinal.style.display =
+            "block";
+
+
+        document.getElementById(
+            "resultadoFinal"
+        ).textContent =
+            "🏆 ¡Completaste las 15 rondas de microbiología!";
+
+    }
+
+
+
+    /* =========================================
+       REINICIAR JUEGO COMPLETO
+    ========================================= */
+
+    function reiniciarJuegoCompleto() {
+
+
+        juegoActivo = false;
+
+        esperandoPregunta = false;
+
+
+        pantallaJuego.style.display =
+            "none";
+
+
+        pantallaFinal.style.display =
+            "none";
+
+
+        preguntaContainer.style.display =
+            "none";
+
+
+        /*
+         * VUELVE A MOSTRAR LA PANTALLA
+         * CON LA IMAGEN
+         */
+
+        pantallaInicio.style.display =
+            "block";
+
+
+        puntosJugador = 0;
+
+        puntosBot = 0;
+
+        vidas = 3;
+
+        ronda = 1;
+
+
+        nivelActual =
+            niveles[nivelElegido];
+
+
+        nivelSeleccionado.textContent =
+            nivelActual.nombre;
+
+
+        nivelSeleccionado.className =
+            nivelActual.clase;
+
+
+        mensaje.textContent = "";
+
+    }
+
+
+
+    /* =========================================
+       TECLADO
+    ========================================= */
+
+    document.addEventListener(
+        "keydown",
+        function (evento) {
+
+
+            /* FLECHA ARRIBA / W */
+
+            if (
+
+                evento.key === "ArrowUp" ||
+
+                evento.key.toLowerCase() === "w"
+
+            ) {
+
+                /*
+                 * EVITA EL SCROLL
+                 */
+
+                evento.preventDefault();
+
+
+                arribaPresionado = true;
+
+            }
+
+
+            /* FLECHA ABAJO / S */
+
+            if (
+
+                evento.key === "ArrowDown" ||
+
+                evento.key.toLowerCase() === "s"
+
+            ) {
+
+                /*
+                 * EVITA EL SCROLL
+                 */
+
+                evento.preventDefault();
+
+
+                abajoPresionado = true;
+
+            }
+
+        }
+    );
+
+
+
+    document.addEventListener(
+        "keyup",
+        function (evento) {
+
+
+            if (
+
+                evento.key === "ArrowUp" ||
+
+                evento.key.toLowerCase() === "w"
+
+            ) {
+
+                evento.preventDefault();
+
+                arribaPresionado = false;
+
+            }
+
+
+            if (
+
+                evento.key === "ArrowDown" ||
+
+                evento.key.toLowerCase() === "s"
+
+            ) {
+
+                evento.preventDefault();
+
+                abajoPresionado = false;
+
+            }
+
+        }
+    );
+
+
+
+    /* =========================================
+       CONTROLES PARA CELULAR
+    ========================================= */
+
+    const btnArriba =
+        document.getElementById(
+            "btnArriba"
+        );
+
+
+    const btnAbajo =
+        document.getElementById(
+            "btnAbajo"
+        );
+
+
+    /* ARRIBA */
+
+    btnArriba.addEventListener(
+        "pointerdown",
+        function (evento) {
+
+            evento.preventDefault();
+
+            arribaPresionado = true;
+
+        }
+    );
+
+
+    btnArriba.addEventListener(
+        "pointerup",
+        function (evento) {
+
+            evento.preventDefault();
+
+            arribaPresionado = false;
+
+        }
+    );
+
+
+    btnArriba.addEventListener(
+        "pointerleave",
+        function () {
+
+            arribaPresionado = false;
+
+        }
+    );
+
+
+    /* ABAJO */
+
+    btnAbajo.addEventListener(
+        "pointerdown",
+        function (evento) {
+
+            evento.preventDefault();
+
+            abajoPresionado = true;
+
+        }
+    );
+
+
+    btnAbajo.addEventListener(
+        "pointerup",
+        function (evento) {
+
+            evento.preventDefault();
+
+            abajoPresionado = false;
+
+        }
+    );
+
+
+    btnAbajo.addEventListener(
+        "pointerleave",
+        function () {
+
+            abajoPresionado = false;
+
+        }
+    );
+
+
+
+    /* =========================================
+       NIVEL INICIAL
+    ========================================= */
+
+    seleccionarNivel("facil");
+
+</script>
+
+</body>
+
+</html>
+```
